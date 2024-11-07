@@ -5,30 +5,31 @@ import java.util.Scanner;
 
 
 public class room {
-    
-
-
-
-    // Method to handle menu-driven CRUD operations for rooms
-    public void manageRooms() {
+   
+   
+    public void manageRooms(){
         Scanner sc = new Scanner(System.in);
         Config conf = new Config();
         int choice;
+        String response;
          room r = new room();
-        // Loop to display the menu and perform actions based on user choice
+        
         do {
-            // Display menu options
-            System.out.println("\nRoom Management Menu");
-            System.out.println("1. Add Room");
-            System.out.println("2. View Rooms");
-            System.out.println("3. Update Room");
-            System.out.println("4. Delete Room");
-            System.out.println("5. Exit");
+          
+            System.out.println("+----------------------------+");
+            System.out.println("|   Room Management Menu     |");
+            System.out.println("+----------------------------+");
+            System.out.println("| 1. Add Room                |");
+            System.out.println("| 2. View Rooms              |");
+            System.out.println("| 3. Update Room             |");
+            System.out.println("| 4. Delete Room             |");
+            System.out.println("| 5. Exit                    |");
+            System.out.println("+----------------------------+");
             System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
+            int option = sc.nextInt();
 
-            // Switch-case to handle different CRUD operations for rooms
-            switch (choice) {
+            
+            switch (option) {
                 case 1:
                     r.addRoom();
                     break;
@@ -36,20 +37,23 @@ public class room {
                     r.viewRooms();
                     break;
                 case 3:
-                    viewRooms();  // Optional: View room before updating
+                    viewRooms();  
                     r.updateRoom();
                     break;
                 case 4:
-                    r.viewRooms();  // Optional: View room before deleting
+                    r.viewRooms();  
                     r.deleteRoom();
                     break;
                 case 5:
-                    System.out.println("Exiting program.");
+                 
                     break;
                 default:
                     System.out.println("Invalid choice, please try again.");
             }
-        } while (choice != 5);  // Continue until user chooses to exit
+     System.out.print("Do you want to continue? (yes/no):  ");
+            response = sc.next();
+        } while (response.equalsIgnoreCase("yes"));  // Continue until user chooses to exit
+        System.out.println("");
     }
 
     // Add a new room to the system
@@ -74,44 +78,58 @@ public class room {
 
     }
 
-    // View all rooms in the system
+   
     private void viewRooms() {
         String cqry = "SELECT * FROM tbl_room";
-        String[] Headers = {"Room Number", "Room Type", "Capacity", "Price", "Availability"};
-        String[] Columns = {"r_num", "r_type", "r_capacity", "r_price", "r_availability"};
+        String[] Headers = {"ID","Room Number", "Room Type", "Capacity", "Price", "Availability"};
+        String[] Columns = {"r_id" ,"r_num", "r_type", "r_capacity", "r_price", "r_availability"};
         Config conf = new Config();
         conf.viewRecords(cqry, Headers, Columns);
     }
 
-    // Update an existing room
-    private void updateRoom() {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter room number to update: ");
-        String roomNumber = sc.next();
-
-        System.out.print("Enter the new room type: ");
-        String roomType = sc.next();
-        System.out.print("Enter the new room capacity: ");
-        int roomCapacity = sc.nextInt();
-        System.out.print("Enter the new room price: ");
-        double roomPrice = sc.nextDouble();
-        System.out.print("Enter the new room availability: ");
-        String roomAvailability = sc.next();
-
-        String qry = "UPDATE tbl_room SET r_type = ?, r_capacity = ?, r_price = ?, r_availability = ? WHERE r_num = ?";
-        Config conf = new Config();
-        conf.updateRecord(qry, roomType, roomCapacity, roomPrice, roomAvailability, roomNumber);
+  
+private void updateRoom() {
+    Scanner sc = new Scanner(System.in);
+    Config conf = new Config();
+    
+  
+    System.out.print("Enter Room ID to update: ");
+    int id = sc.nextInt();
+    
+  
+    while (conf.getSingleValue("SELECT r_id FROM tbl_room WHERE r_id = ?", id) == 0) {
+        System.out.println("Selection ID doesn't exist.");
+        System.out.print("Select Room ID again: ");
+        id = sc.nextInt(); 
     }
+    
+    
+    System.out.print("Enter the new room number: ");
+    String roomNumber = sc.next();
+    System.out.print("Enter the new room type: ");
+    String roomType = sc.next();
+    System.out.print("Enter the new room capacity: ");
+    int roomCapacity = sc.nextInt();
+    System.out.print("Enter the new room price: ");
+    double roomPrice = sc.nextDouble();
+    System.out.print("Enter the new room availability: ");
+    String roomAvailability = sc.next();
+    
+    String qry = "UPDATE tbl_room SET r_num = ?, r_type = ?, r_capacity = ?, r_price = ?, r_availability = ? WHERE r_id = ?";
+    
+    conf.updateRecord(qry, roomNumber, roomType, roomCapacity, roomPrice, roomAvailability, id); 
+}
+
 
     // Delete an existing room
     private void deleteRoom() {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter room number to delete: ");
-        String roomNumber = sc.next();
+        System.out.print("Enter Room ID to delete: ");
+        int id = sc.nextInt();
 
-        String sqlDelete = "DELETE FROM tbl_room WHERE r_num = ?";
+        String sqlDelete = "DELETE FROM tbl_room WHERE r_id = ?";
         Config conf = new Config();
-        conf.deleteRecord(sqlDelete, roomNumber);
+        conf.deleteRecord(sqlDelete, id);
     }
 }
 

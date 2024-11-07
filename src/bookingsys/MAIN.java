@@ -14,19 +14,22 @@ public class MAIN {
         connectDB();   
         Scanner sc = new Scanner(System.in); 
         String op = null;
+        boolean exit = true;
       
        do{
-        System.out.println("----- HOTEL BOOKING SYSTEM -----");
-        System.out.println("-------------------------------------");
-        System.out.println("1. Manage Guest");
-        System.out.println("2. Manage Room");
-        System.out.println("3. View Available Rooms");
-        System.out.println("4. Book a Room");
-        System.out.println("5. Exit");
-        System.out.println("-------------------------------------");
+                // Display the Hotel Booking System menu in a box
+            System.out.println("+----------------------------+");
+            System.out.println("|   HOTEL BOOKING SYSTEM     |");
+            System.out.println("+----------------------------+");
+            System.out.println("| 1. Manage Guest            |");
+            System.out.println("| 2. Manage Room             |");
+            System.out.println("| 3. Book a Room             |");
+            System.out.println("| 4. Records                 |");
+            System.out.println("| 5. Exit                    |");
+            System.out.println("+----------------------------+");
+            System.out.print("Enter Action: ");
+            int option = sc.nextInt();
 
-        System.out.print("Enter Action: ");
-        int option = sc.nextInt();
 
         while(option > 5){
             System.out.print("Invalid Action. Try Again: ");
@@ -45,20 +48,28 @@ public class MAIN {
             break;
           
             case 3:
+                booking b = new booking();
+                b.manageBookings();
             break;
            
             case 4:
             break;
             
             case 5:
-                System.exit(0);
+                System.out.print("Exit Selected. Type (yes) to continue: ");
+                String response = sc.next();
+                if(response.equalsIgnoreCase("yes")){
+                exit = false;
+                }
                 break;
-            
-    }     System.out.print("Do you want to continue?(yes/no): ");
-            op=sc.next();
-        }while(op.equals("yes")|| op.equals("no"));
-         System.out.println("THANK YOU ");
+          
+                
     }     
-    }
-    
+        }while(exit);
+       
+            System.out.println("Program Close");
+        sc.close(); 
+    }     
+
+} 
 

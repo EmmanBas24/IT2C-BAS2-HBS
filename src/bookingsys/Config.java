@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package bookingsys;
 
 import java.sql.Connection;
@@ -10,12 +5,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+  
 
-/**
- *
- * @author russe
- */
 public class Config {
+
+    //-----------------------------------------------
+    // DATABASE CONNECTION METHOD
+    //-----------------------------------------------
+
     public static Connection connectDB() {
         Connection con = null;
         try {
@@ -26,9 +23,12 @@ public class Config {
         }
         return con;
     }
-    
 
-   public void addRecord(String sql, String... values) {
+    //-----------------------------------------------
+    // ADD RECORD METHOD
+    //-----------------------------------------------
+
+    public void addRecord(String sql, String... values) {
         try (Connection conn = this.connectDB(); // Use the connectDB method
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
@@ -44,11 +44,11 @@ public class Config {
         }
     }
 
+    //-----------------------------------------------
+    // VIEW RECORDS METHOD
+    //-----------------------------------------------
 
-
-
-
- // Dynamic view method to display records from any table
+    // Dynamic view method to display records from any table
     public void viewRecords(String sqlQuery, String[] columnHeaders, String[] columnNames) {
         // Check that columnHeaders and columnNames arrays are the same length
         if (columnHeaders.length != columnNames.length) {
@@ -86,30 +86,36 @@ public class Config {
         }
     }
 
-// Add this method in the config class
-public void deleteRecord(String sql, Object... values) {
-    try (Connection conn = this.connectDB();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        // Loop through the values and set them in the prepared statement dynamically
-        for (int i = 0; i < values.length; i++) {
-            if (values[i] instanceof Integer) {
-                pstmt.setInt(i + 1, (Integer) values[i]); // If the value is Integer
-            } else {
-                pstmt.setString(i + 1, values[i].toString()); // Default to String for other types
-            }
-        }
-
-        pstmt.executeUpdate();
-        System.out.println("Record deleted successfully!");
-    } catch (SQLException e) {
-        System.out.println("Error deleting record: " + e.getMessage());
-    }
-}
-//-----------------------------------------------
-    // UPDATE METHOD
+    //-----------------------------------------------
+    // DELETE RECORD METHOD
     //-----------------------------------------------
 
+    // Delete method for deleting a record
+    public void deleteRecord(String sql, Object... values) {
+        try (Connection conn = this.connectDB();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Loop through the values and set them in the prepared statement dynamically
+            for (int i = 0; i < values.length; i++) {
+                if (values[i] instanceof Integer) {
+                    pstmt.setInt(i + 1, (Integer) values[i]); // If the value is Integer
+                } else {
+                    pstmt.setString(i + 1, values[i].toString()); // Default to String for other types
+                }
+            }
+
+            pstmt.executeUpdate();
+            System.out.println("Record deleted successfully!");
+        } catch (SQLException e) {
+            System.out.println("Error deleting record: " + e.getMessage());
+        }
+    }
+
+    //-----------------------------------------------
+    // UPDATE RECORD METHOD
+    //-----------------------------------------------
+
+    // Update method for updating a record
     public void updateRecord(String sql, Object... values) {
         try (Connection conn = this.connectDB(); // Use the connectDB method
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -143,10 +149,11 @@ public void deleteRecord(String sql, Object... values) {
             System.out.println("Error updating record: " + e.getMessage());
         }
     }
- 
- //-----------------------------------------------
-    // Helper Method for Setting PreparedStatement Values
+
     //-----------------------------------------------
+    // HELPER METHOD FOR SETTING PREPARED STATEMENT VALUES
+    //-----------------------------------------------
+
     private void setPreparedStatementValues(PreparedStatement pstmt, Object... values) throws SQLException {
         for (int i = 0; i < values.length; i++) {
             if (values[i] instanceof Integer) {
@@ -171,10 +178,11 @@ public void deleteRecord(String sql, Object... values) {
         }
     }
 
-  //-----------------------------------------------
+    //-----------------------------------------------
     // GET SINGLE VALUE METHOD
     //-----------------------------------------------
 
+    // Method to retrieve a single value from the database
     public double getSingleValue(String sql, Object... params) {
         double result = 0.0;
         try (Connection conn = connectDB();
@@ -190,5 +198,7 @@ public void deleteRecord(String sql, Object... values) {
             System.out.println("Error retrieving single value: " + e.getMessage());
         }
         return result;
-    }   
+    }
+
+   
 }

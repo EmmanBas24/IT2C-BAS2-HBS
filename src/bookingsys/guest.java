@@ -6,24 +6,29 @@ public class guest {
 
     // Method to handle menu-driven CRUD operations
     public void manageGuests() {
+      
         Scanner sc = new Scanner(System.in);
         Config conf = new Config();
-        int choice;
+        String response;
         guest g = new guest();
-        // Loop to display the menu and perform actions based on user choice
+       
         do {
-            // Display menu options
-            System.out.println("\nGuest Management Menu");
-            System.out.println("1. Add Guest");
-            System.out.println("2. View Guests");
-            System.out.println("3. Update Guest");
-            System.out.println("4. Delete Guest");
-            System.out.println("5. Exit");
+            System.out.println("");
+            System.out.println("+------------------------+");
+            System.out.println("|  Guest Management Menu |");
+            System.out.println("+------------------------+");
+            System.out.println("| 1. Add Guest           |");
+            System.out.println("| 2. View Guests         |");
+            System.out.println("| 3. Update Guest        |");
+            System.out.println("| 4. Delete Guest        |");
+            System.out.println("| 5. Exit                |");
+            System.out.println("+------------------------+");
             System.out.print("Enter your choice: ");
-            choice = sc.nextInt();
+            int option = sc.nextInt();
+
 
             // Switch-case to handle different CRUD operations
-            switch (choice) {
+            switch (option) {
                 case 1:
                     g.addGuest();
                     g.viewGuest();
@@ -40,12 +45,19 @@ public class guest {
                     g.deleteGuest();
                     break;
                 case 5:
-                    System.out.println("Exiting program.");
+                    
                     break;
                 default:
                     System.out.println("Invalid choice, please try again.");
             }
-        } while (choice != 5);  // Continue until user chooses to exit
+
+            // Ask if the user wants to continue
+            System.out.print("Do you want to continue? (yes/no): ");
+            response = sc.next();
+
+        } while (response.equalsIgnoreCase("yes"));  // Continue until user chooses to exit
+
+        System.out.println("");
     }
 
     // Add a new guest to the system
@@ -77,49 +89,51 @@ public class guest {
         conf.viewRecords(cqry, Headers, Columns);
     }
 
-  private void updateGuest() {
-    Config conf = new Config();
-    Scanner sc = new Scanner(System.in);
+    // Update guest information
+    private void updateGuest() {
+        Config conf = new Config();
+        Scanner sc = new Scanner(System.in);
 
-    System.out.print("Enter guest ID to update: ");
-    int id = sc.nextInt();
-    
-    // Check if the ID exists (Assuming getSingleValue returns a double)
-    while (conf.getSingleValue("SELECT g_id FROM tbl_guest WHERE g_id = ?", id) <= 0) {
-        System.out.println("Selection ID doesn't exist.");
-        System.out.print("Select Guest ID again: ");
-        id = sc.nextInt(); // Reusing the same 'id' variable without redeclaring it
+        System.out.print("Enter guest ID to update: ");
+        int id = sc.nextInt();
+        
+        // Check if the ID exists (Assuming getSingleValue returns a double)
+        while (conf.getSingleValue("SELECT g_id FROM tbl_guest WHERE g_id = ?", id) == 0) {
+            System.out.println("Selection ID doesn't exist.");
+            System.out.print("Select Guest ID again: ");
+            id = sc.nextInt(); // Reusing the same 'id' variable without redeclaring it
+        }
+
+        System.out.print("Enter the new first name: ");
+        String fname = sc.next();
+        System.out.print("Enter the new last name: ");
+        String lname = sc.next();
+        System.out.print("Enter the new contact number: ");
+        String cnum = sc.next();
+        System.out.print("Enter the new Email: ");
+        String email = sc.next();
+
+        String qry = "UPDATE tbl_guest SET g_fname = ?, g_lname = ?, g_cnum = ?, g_email = ? WHERE g_id = ?";
+        conf.updateRecord(qry, fname, lname, cnum, email, id);
     }
-
-    System.out.print("Enter the new first name: ");
-    String fname = sc.next();
-    System.out.print("Enter the new last name: ");
-    String lname = sc.next();
-    System.out.print("Enter the new contact number: ");
-    String cnum = sc.next();
-    System.out.print("Enter the new Email: ");
-    String email = sc.next();
-
-    String qry = "UPDATE tbl_guest SET g_fname = ?, g_lname = ?, g_cnum = ?, g_email = ? WHERE g_id = ?";
-    conf.updateRecord(qry, fname, lname, cnum, email, id);
-}
 
     // Delete an existing guest
     private void deleteGuest() {
         Scanner sc = new Scanner(System.in);
-       Config conf = new Config();
+        Config conf = new Config();
 
         System.out.print("Enter guest ID to delete: ");
         int id = sc.nextInt();
 
-          // Check if the ID exists (Assuming getSingleValue returns a double)
+        // Check if the ID exists (Assuming getSingleValue returns a double)
         while (conf.getSingleValue("SELECT g_id FROM tbl_guest WHERE g_id = ?", id) <= 0) {
             System.out.println("Selection ID doesn't exist.");
             System.out.print("Select Guest ID again: ");
             id = sc.nextInt(); // Reusing the same 'id' variable without redeclaring it
         }
+        
         String sqlDelete = "DELETE FROM tbl_guest WHERE g_id = ?";
-       
+        
         conf.deleteRecord(sqlDelete, id);
     }
 }
