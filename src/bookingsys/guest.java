@@ -81,7 +81,7 @@ public class guest {
     }
 
     // View all guests
-    private void viewGuest() {
+    public void viewGuest() {
         String cqry = "SELECT * FROM tbl_guest";
         String[] Headers = {"ID", "First Name", "Last Name", "Contact Number", "Email"};
         String[] Columns = {"g_id", "g_fname", "g_lname", "g_cnum", "g_email"};

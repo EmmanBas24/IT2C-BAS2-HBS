@@ -79,9 +79,9 @@ public class room {
     }
 
    
-    private void viewRooms() {
+    public void viewRooms() {
         String cqry = "SELECT * FROM tbl_room";
-        String[] Headers = {"ID","Room Number", "Room Type", "Capacity", "Price", "Availability"};
+        String[] Headers = {"ID","Room Number", "Room Type", "Capacity", "Price", "Status"};
         String[] Columns = {"r_id" ,"r_num", "r_type", "r_capacity", "r_price", "r_availability"};
         Config conf = new Config();
         conf.viewRecords(cqry, Headers, Columns);
