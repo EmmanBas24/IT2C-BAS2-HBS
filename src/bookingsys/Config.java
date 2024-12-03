@@ -4,7 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
   
 
 public class Config {
@@ -38,7 +42,7 @@ public class Config {
             }
 
             pstmt.executeUpdate();
-            System.out.println("Record added successfully!");
+          
         } catch (SQLException e) {
             System.out.println("Error adding record: " + e.getMessage());
         }
@@ -105,7 +109,7 @@ public class Config {
             }
 
             pstmt.executeUpdate();
-            System.out.println("Record deleted successfully!");
+           
         } catch (SQLException e) {
             System.out.println("Error deleting record: " + e.getMessage());
         }
@@ -144,7 +148,7 @@ public class Config {
             }
 
             pstmt.executeUpdate();
-            System.out.println("Record updated successfully!");
+            
         } catch (SQLException e) {
             System.out.println("Error updating record: " + e.getMessage());
         }
@@ -198,6 +202,59 @@ public class Config {
             System.out.println("Error retrieving single value: " + e.getMessage());
         }
         return result;
+    }
+
+    ResultSet executeQuery(String query, int bookingId) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+public String getStringValue(String query, Object... params) {
+    String result = null;
+    Connection conn = connectDB();
+    try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        for (int i = 0; i < params.length; i++) {
+            pstmt.setObject(i + 1, params[i]);
+        }
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                result = rs.getString(1);
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error retrieving string value: " + e.getMessage());
+    }
+    return result;
+}
+
+public Object[][] fetchRecords(String query, Object... params) {
+    try (Connection conn = connectDB();
+         PreparedStatement pstmt = conn.prepareStatement(query)) {
+        for (int i = 0; i < params.length; i++) {
+            pstmt.setObject(i + 1, params[i]);
+        }
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            List<Object[]> rows = new ArrayList<>();
+
+            while (rs.next()) {
+                Object[] row = new Object[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    row[i] = rs.getObject(i + 1);
+                }
+                rows.add(row);
+            }
+
+            return rows.toArray(new Object[0][0]);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
+    List<Map<String, Object>> getRecords(String query) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
    
